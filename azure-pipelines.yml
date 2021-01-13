@@ -18,7 +18,15 @@ steps:
 
 # do this after other tasks such as building
 - task: DotNetCoreCLI@2
+  displayName: 'run MSTest'
   inputs:
     command: test
     projects: '**/tests/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'collect Code Coverage'
+  inputs:
+    command: test
+    projects: '**/tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
