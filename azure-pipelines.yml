@@ -31,11 +31,10 @@ steps:
     projects: '**/tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
-- task: DotNetCoreCLI@2
-  displayName: Publish artefacts to AzurePipelines
+# this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
+- task: PublishBuildArtifacts@1
+  displayName: 'publish artefacts to Azure Pipelines'
   inputs:
-    command: publish
-    publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: True
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'pipelines-dotnet.core'
     
