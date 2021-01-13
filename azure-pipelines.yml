@@ -32,6 +32,7 @@ steps:
     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
 - task: DotNetCoreCLI@2
+  displayName: Publish artefacts to AzurePipelines
   inputs:
     command: publish
     publishWebProjects: True
