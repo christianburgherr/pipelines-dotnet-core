@@ -11,7 +11,6 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  version: '0.0.1'
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration) --output "D:\a\1\a"
@@ -33,21 +32,9 @@ steps:
     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
 # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
-#- task: PublishBuildArtifacts@1
-#  displayName: 'publish artefacts to Azure Pipelines'
-#  inputs:
-#    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-#    artifactName: 'pipelines-dotnet.core'
-    
-# do this near the end of your pipeline in most cases
-- script: dotnet pack /p:PackageVersion=$(version)  # define version variable elsewhere in your pipeline
-- task: NuGetAuthenticate@0
-  input:
-    nuGetServiceConnections: 'pipelines-dotnet-core'
-- task: NuGetCommand@2
+- task: PublishBuildArtifacts@1
+  displayName: 'publish artefacts to Azure Pipelines'
   inputs:
-    command: push
-    nuGetFeedType: external
-    publishFeedCredentials: 'pipelines-dotnet-core'
-    versioningScheme: byEnvVar
-    versionEnvVar: version
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'pipelines-dotnet.core'
+    
