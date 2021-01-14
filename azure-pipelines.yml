@@ -11,12 +11,14 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  Major: '1'
+  Minor: '0'
+  Patch: '0'
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration) --output "D:\a\1\a"
   displayName: 'dotnet build $(buildConfiguration)'
 
-# do this after other tasks such as building
 - task: DotNetCoreCLI@2
   displayName: 'run MSTest'
   inputs:
@@ -31,10 +33,21 @@ steps:
     projects: '**/tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
-# this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
-- task: PublishBuildArtifacts@1
-  displayName: 'publish artefacts to Azure Pipelines'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack $(buildConfiguration)'
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: 'pipelines-dotnet.core'
-    
+    command: pack
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
+
+- task: NuGetAuthenticate@0
+  displayName: 'authenticate NuGet'
+  
+- task: NuGetCommand@2
+  displayName: 'push NuGet package'
+  inputs:
+    command: push
+    publishVstsFeed: 'playground/pipelines-dotnet-core'
+    allowPackageConflicts: true
